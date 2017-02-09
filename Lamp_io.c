@@ -11,7 +11,6 @@
 int main (void)
 {
   printf ("Banana Pi blink\n") ;
-	openlog("Lamp_io", LOG_PID|LOG_CONS, LOG_USER);
 	//struct timespec spec;
   time_t t = time(NULL);
   struct tm *tm_struct = localtime(&t);
@@ -31,21 +30,28 @@ int main (void)
   wiringPiSetup () ;
   pinMode (Lamp, OUTPUT) ;
 
-  for (;;)
-  {
-		if(hour < PJU.start_hour || hour > PJU.close_hour){
+	openlog("Lamp_io", LOG_PID|LOG_CONS, LOG_USER);
+  while(1)
+	{
+		/*if(hour < PJU.start_hour || hour > PJU.close_hour){
     	digitalWrite (Lamp, HIGH) ;	// On
 			printf("Turn on lamp\n");
 			syslog(LOG_INFO, "Turn on lamp\n");
-		}
+		}*/
     //delay (500) ;		// mS
 		if(hour > PJU.start_hour && hour < PJU.close_hour){
  	  	digitalWrite (Lamp, LOW) ;	// Off
 			printf("Turn off lamp\n");
 			syslog(LOG_INFO, "Turn off lamp\n");
 		}
+		else{
+    	digitalWrite (Lamp, HIGH) ;	// On
+			printf("Turn on lamp\n");
+			syslog(LOG_INFO, "Turn on lamp\n");
+		}
 		sleep(60);
    // delay (500) ;
   }
+	closelog();
   return 0 ;
 }
